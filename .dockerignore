@@ -1,0 +1,13 @@
+*
+!Dockerfile
+!app.py
+!README.md
+!content/
+content/*
+!content/week1.json
+!tests/
+tests/*
+!tests/test_app.py
+!deploy/
+deploy/*
+!deploy/restore.py

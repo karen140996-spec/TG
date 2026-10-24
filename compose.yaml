@@ -1,0 +1,34 @@
+services:
+  publisher:
+    build: .
+    restart: unless-stopped
+    init: true
+    user: "10001:10001"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      TELEGRAM_BOT_TOKEN_FILE: /run/secrets/telegram_bot_token
+      TELEGRAM_CHANNEL_ID: ${TELEGRAM_CHANNEL_ID:?Set TELEGRAM_CHANNEL_ID}
+      TELEGRAM_REVIEWER_ID: ${TELEGRAM_REVIEWER_ID:?Set TELEGRAM_REVIEWER_ID}
+      PUBLISH_TIMEZONE: ${PUBLISH_TIMEZONE:-Europe/Moscow}
+      PUBLISH_HOUR: ${PUBLISH_HOUR:-10}
+      STATE_DIR: /app/.state
+    secrets:
+      - telegram_bot_token
+    volumes:
+      - publisher_state:/app/.state
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid
+    mem_limit: 256m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+secrets:
+  telegram_bot_token:
+    file: .secrets/telegram_bot_token
+volumes:
+  publisher_state:
